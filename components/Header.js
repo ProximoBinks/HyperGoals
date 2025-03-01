@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
-import { Sling as Hamburger } from "hamburger-react";
+// import { Sling as Hamburger } from "hamburger-react";
+import DarkModeToggle from './DarkModeToggle';
 
 export default function Header({ title }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -17,39 +18,8 @@ export default function Header({ title }) {
 
         {/* Hamburger Menu (Mobile) */}
         <div className="md:hidden">
-          <Hamburger toggled={menuOpen} toggle={setMenuOpen} color="white" size={24} />
+          <DarkModeToggle onToggle={(isDark) => console.log('Dark mode:', isDark)} />
         </div>
-
-        {/* Navigation */}
-        {/* <nav
-          className={`absolute top-14 left-0 w-full bg-gray-900 md:relative md:bg-transparent md:flex md:items-center md:space-x-6 md:top-auto md:left-auto p-4 md:p-0 transition-all duration-300 ${
-            menuOpen ? "block" : "hidden md:flex"
-          }`}
-        >
-          <ul className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6">
-            <li>
-              <Link href="/">
-                <span className="block py-2 px-4 text-sm md:text-base hover:text-gray-400 cursor-pointer">
-                  Home
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/about">
-                <span className="block py-2 px-4 text-sm md:text-base hover:text-gray-400 cursor-pointer">
-                  About
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact">
-                <span className="block py-2 px-4 text-sm md:text-base hover:text-gray-400 cursor-pointer">
-                  Contact
-                </span>
-              </Link>
-            </li>
-          </ul>
-        </nav> */}
       </div>
     </header>
   );

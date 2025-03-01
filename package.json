@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@netlify/plugin-nextjs": "^5.9.2",
+    "@react-spring/web": "^9.7.5",
     "date-fns": "^4.1.0",
     "hamburger-react": "^2.5.2",
     "next": "^15.0.0",
