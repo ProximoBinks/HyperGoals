@@ -1,3 +1,4 @@
+// index.js
 import { useEffect, useState } from "react";
 import { fetchGoals } from "../lib/goals";
 import {
@@ -19,6 +20,9 @@ export default function Home() {
     streakHistory: {}
   });
 
+  // For displaying a modal when a day is clicked
+  const [selectedDay, setSelectedDay] = useState(null); // or store { dateStr, dateObj, activities[] }
+
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -31,33 +35,48 @@ export default function Home() {
 
   const { goals, averageProgress, totalGoals, totalTasks, completedTasks, streakHistory } = goalsData;
 
-  // Same date-based logic as before
   const monthName = format(currentDate, "MMMM yyyy");
   const daysInMonth = getDaysInMonth(currentDate);
   const firstDayOfMonth = startOfMonth(currentDate);
   const today = new Date();
 
+  // Generate the list of days for current month
   const calendarDays = Array.from({ length: daysInMonth }, (_, i) => {
     const date = new Date(firstDayOfMonth);
     date.setDate(i + 1);
     return date;
   });
 
+  // Example logic: Green if major>=1 && medium>=2 && small>=2, Blue if any other activity, Gray if none
   const getColorForDate = (dateStr) => {
-    const { major = 0, medium = 0, small = 0 } = streakHistory[dateStr] || {};
+    const info = streakHistory[dateStr] || {};
+    const major = info.major || 0;
+    const medium = info.medium || 0;
+    const small = info.small || 0;
 
-    // 1) Green => >=1 major, >=2 medium, >=2 small
     if (major >= 1 && medium >= 2 && small >= 1) {
       return "bg-green-500";
-    }
-    // 2) Blue => some activity but doesn’t meet green threshold
-    else if (major > 0 || medium > 0 || small > 0) {
+    } else if (major > 0 || medium > 0 || small > 0) {
       return "bg-blue-500";
-    }
-    // 3) Gray => no activity
-    else {
+    } else {
       return "bg-gray-300";
     }
+  };
+
+  // Open the modal with this day’s info
+  const handleDayClick = (day) => {
+    const dateStr = format(day, "yyyy-MM-dd");
+    const activities = (streakHistory[dateStr]?.activities) || [];
+    setSelectedDay({
+      dateObj: day,
+      dateStr,
+      activities
+    });
+  };
+
+  // Close the modal
+  const handleCloseModal = () => {
+    setSelectedDay(null);
   };
 
   return (
@@ -91,10 +110,11 @@ export default function Home() {
             {`🔥 Streak Calendar ${monthName}`}
           </h3>
           <button
-            className={`px-3 py-1 rounded ${isSameMonth(currentDate, today)
-              ? "opacity-50 cursor-not-allowed"
-              : "bg-gray-700 text-white hover:bg-gray-800"
-              }`}
+            className={`px-3 py-1 rounded ${
+              isSameMonth(currentDate, today)
+                ? "opacity-50 cursor-not-allowed"
+                : "bg-gray-700 text-white hover:bg-gray-800"
+            }`}
             onClick={() => {
               if (!isSameMonth(currentDate, today)) {
                 setCurrentDate(addMonths(currentDate, 1));
@@ -107,27 +127,65 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-7 gap-2">
-          {calendarDays.map((date, index) => {
-            const dateStr = format(date, "yyyy-MM-dd");
+          {calendarDays.map((dateObj, index) => {
+            const dateStr = format(dateObj, "yyyy-MM-dd");
+            const colorClass = getColorForDate(dateStr);
+
             return (
               <div
                 key={index}
-                className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-md ${getColorForDate(dateStr)}`}
+                className={`w-10 h-10 flex items-center justify-center font-bold rounded-md text-white ${colorClass} cursor-pointer`}
+                onClick={() => handleDayClick(dateObj)} // open the modal
               >
-                {date.getDate()}
+                {dateObj.getDate()}
               </div>
             );
           })}
         </div>
 
         <p className="text-sm text-gray-500 mt-4 text-center flex flex-col sm:flex-row sm:justify-center sm:space-x-4">
+          <span>🟢 1 Major, 2 Medium, 1 Small</span>
+          <span>🔵 Other Activity</span>
           <span>⚪ No Activity</span>
-          <span>🔵 Any Activity</span>
-          <span>🟩 1 Major + 2 Medium + 1 Small</span>
         </p>
       </div>
 
-      {/* Individual Goals & Tasks */}
+      {/* MODAL Overlay */}
+      {selectedDay && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          {/* Modal itself */}
+          <div className="bg-white rounded-lg shadow-lg p-4 w-80 max-w-full mx-2 relative">
+            {/* Close button */}
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+              onClick={handleCloseModal}
+            >
+              ✕
+            </button>
+
+            <h3 className="text-lg font-bold text-center mb-2">
+              {format(selectedDay.dateObj, "MMMM d, yyyy")}
+            </h3>
+
+            {selectedDay.activities.length === 0 ? (
+              <p className="text-center text-gray-500">No activity on this day.</p>
+            ) : (
+              <div className="space-y-1">
+                <p className="font-semibold text-gray-700">
+                  Activities:
+                </p>
+                {selectedDay.activities.map((act, idx) => (
+                  <p key={idx} className="text-gray-600">
+                    • {act}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Individual Goals */}
       <div className="mt-6 space-y-4">
         {goals.map((goal, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-md">
@@ -148,8 +206,6 @@ export default function Home() {
                 style={{ width: `${goal.progress}%` }}
               />
             </div>
-
-            {/* Display the goal type next to each task */}
             <ul className="mt-3 space-y-2">
               {goal.tasks.map((task, idx) => (
                 <li key={idx} className="flex items-center space-x-2">
@@ -165,7 +221,6 @@ export default function Home() {
                   >
                     {task.title} ({task.progress}%)
                   </span>
-                  {/* Add the goal's type here */}
                   <span className="text-xs text-gray-400 italic">
                     [{goal.type}]
                   </span>
