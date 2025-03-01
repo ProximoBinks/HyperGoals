@@ -39,10 +39,12 @@ export default function Home() {
 
   const getColorForDate = (dateStr) => {
     const streakCount = streakHistory[dateStr] || 0;
+
     if (streakCount === goals.length) return "bg-green-500"; // 🟩 All projects on streak
     if (streakCount > 0) return "bg-blue-500"; // 🔵 Some projects on streak
     return "bg-gray-300"; // ⚪ No streak
   };
+
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
