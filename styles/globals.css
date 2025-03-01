@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Google Font: Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 html, body {
   margin: 0;
   padding: 0;
+  font-family: theme('fontFamily.sans'); /* Apply Tailwind font */
 }
