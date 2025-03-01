@@ -87,7 +87,7 @@ export default function Home() {
 
         <div className="grid grid-cols-7 gap-2">
           {calendarDays.map((date, index) => {
-            const dateStr = date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+            const dateStr = format(date, "yyyy-MM-dd");
             return (
               <div
                 key={index}
@@ -113,7 +113,7 @@ export default function Home() {
             <h3 className="text-base font-[600]">
               {goal.title} ({goal.progress}%)
               {goal.deadline && (
-                <span className="text-red-500 text-sm ml-2"> (Deadline: {goal.deadline})</span>
+                <div className="text-red-500 text-sm my-2"> (Deadline: {goal.deadline})</div>
               )}
             </h3>
             <p className="text-sm text-gray-500">🔥 Current Streak: {goal.current_streak} days | Max Streak: {goal.max_streak} days</p>
