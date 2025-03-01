@@ -9,7 +9,7 @@ export default function Header({ title }) {
     <header className="fixed top-0 left-0 w-full bg-gradient-to-br from-[#d089f4] to-[#764bb7] text-white p-3 z-50 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6">
         {/* Logo */}
-        <h1 className="text-2xl font-[800] font-proxima-condensed">
+        <h1 className="text-3xl font-[800] font-proxima-condensed">
           <Link href="/">
             <span className="cursor-pointer">{title}</span>
           </Link>
