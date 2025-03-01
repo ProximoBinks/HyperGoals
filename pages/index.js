@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchGoals } from "../lib/goals";
+import { format, subMonths, addMonths, getDaysInMonth, startOfMonth, isSameMonth } from "date-fns";
 
 export default function Home() {
   const [goalsData, setGoalsData] = useState({
@@ -7,8 +8,11 @@ export default function Home() {
     averageProgress: 0,
     totalGoals: 0,
     totalTasks: 0,
-    completedTasks: 0
+    completedTasks: 0,
+    streakHistory: {}
   });
+
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     async function loadGoals() {
@@ -18,11 +22,31 @@ export default function Home() {
     loadGoals();
   }, []);
 
-  const { goals, averageProgress, totalGoals, totalTasks, completedTasks } = goalsData;
+  const { goals, averageProgress, totalGoals, totalTasks, completedTasks, streakHistory } = goalsData;
+
+  // Get month & year info
+  const monthName = format(currentDate, "MMMM yyyy"); // Example: "March 2025"
+  const daysInMonth = getDaysInMonth(currentDate); // Get number of days in the current month
+  const firstDayOfMonth = startOfMonth(currentDate);
+  const today = new Date();
+
+  // Generate list of days for the current month
+  const calendarDays = Array.from({ length: daysInMonth }, (_, i) => {
+    const date = new Date(firstDayOfMonth);
+    date.setDate(i + 1);
+    return date;
+  });
+
+  const getColorForDate = (dateStr) => {
+    const streakCount = streakHistory[dateStr] || 0;
+    if (streakCount === goals.length) return "bg-green-500"; // 🟩 All projects on streak
+    if (streakCount > 0) return "bg-blue-500"; // 🔵 Some projects on streak
+    return "bg-gray-300"; // ⚪ No streak
+  };
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
-      <h2 className="text-xl font-[700] text-center mt-6">📌 My Goals</h2>
+      <h2 className="text-2xl font-[700] text-center mt-6 font-proxima-condensed">📌 MY GOALS</h2>
 
       {/* Overall Progress Section */}
       <div className="bg-white p-4 rounded-lg shadow-md mt-4 text-center">
@@ -35,17 +59,62 @@ export default function Home() {
         </p>
       </div>
 
+      {/* 📆 Streak Calendar */}
+      <div className="bg-white p-4 rounded-lg shadow-md mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <button
+            className="bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800"
+            onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+          >
+            ←
+          </button>
+          <h3 className="text-[0.95rem] md:text-lg font-[600]">{`🔥 Streak Calendar ${monthName}`}</h3>
+          <button
+            className={`px-3 py-1 rounded ${isSameMonth(currentDate, today) ? "opacity-50 cursor-not-allowed" : "bg-gray-700 text-white hover:bg-gray-800"
+              }`}
+            onClick={() => {
+              if (!isSameMonth(currentDate, today)) {
+                setCurrentDate(addMonths(currentDate, 1));
+              }
+            }}
+            disabled={isSameMonth(currentDate, today)}
+          >
+            →
+          </button>
+        </div>
+
+        <div className="grid grid-cols-7 gap-2">
+          {calendarDays.map((date, index) => {
+            const dateStr = date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+            return (
+              <div
+                key={index}
+                className={`w-10 h-10 flex items-center justify-center text-white font-bold rounded-md ${getColorForDate(dateStr)}`}
+              >
+                {date.getDate()}
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-sm text-gray-500 mt-4 text-center flex flex-col sm:flex-row sm:justify-center sm:space-x-4">
+          <span>🟩 All goals on streak</span>
+          <span>🔵 Some goals on streak</span>
+          <span>⚪ No streak</span>
+        </p>
+
+      </div>
+
       {/* Individual Goals */}
       <div className="mt-6 space-y-4">
         {goals.map((goal, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-md">
             <h3 className="text-base font-[600]">
-              {goal.title} ({goal.progress}%) 
-              {goal.daysLeft !== null && (
-                <span className="text-red-500 text-sm"> ({goal.daysLeft} days left)</span>
+              {goal.title} ({goal.progress}%)
+              {goal.deadline && (
+                <span className="text-red-500 text-sm ml-2"> (Deadline: {goal.deadline})</span>
               )}
             </h3>
-            <p className="text-sm text-gray-500">🔥 Streak: {goal.streak} days</p>
+            <p className="text-sm text-gray-500">🔥 Current Streak: {goal.current_streak} days | Max Streak: {goal.max_streak} days</p>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${goal.progress}%` }}></div>
             </div>
