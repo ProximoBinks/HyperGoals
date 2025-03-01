@@ -46,12 +46,17 @@ export default function Home() {
   const getColorForDate = (dateStr) => {
     const { major = 0, medium = 0, small = 0 } = streakHistory[dateStr] || {};
 
-    if (major === 1 && medium === 2 && small === 1) {
-      return "bg-green-500"; // Perfect combo
-    } else if (major > 0 || medium > 0 || small > 0) {
-      return "bg-blue-500";  // Some activity
-    } else {
-      return "bg-gray-300";  // No activity
+    // 1) Green => >=1 major, >=2 medium, >=2 small
+    if (major >= 1 && medium >= 2 && small >= 1) {
+      return "bg-green-500";
+    }
+    // 2) Blue => some activity but doesn’t meet green threshold
+    else if (major > 0 || medium > 0 || small > 0) {
+      return "bg-blue-500";
+    }
+    // 3) Gray => no activity
+    else {
+      return "bg-gray-300";
     }
   };
 
@@ -87,8 +92,8 @@ export default function Home() {
           </h3>
           <button
             className={`px-3 py-1 rounded ${isSameMonth(currentDate, today)
-                ? "opacity-50 cursor-not-allowed"
-                : "bg-gray-700 text-white hover:bg-gray-800"
+              ? "opacity-50 cursor-not-allowed"
+              : "bg-gray-700 text-white hover:bg-gray-800"
               }`}
             onClick={() => {
               if (!isSameMonth(currentDate, today)) {
