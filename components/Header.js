@@ -6,12 +6,12 @@ export default function Header({ title }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-gray-800 text-white p-3 z-50 shadow-md">
+    <header className="fixed top-0 left-0 w-full bg-gradient-to-br from-[#d089f4] to-[#764bb7] text-white p-3 z-50 shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6">
         {/* Logo */}
-        <h1 className="text-lg font-bold">
+        <h1 className="text-2xl font-[800] font-proxima-condensed">
           <Link href="/">
-            <span className="cursor-pointer hover:text-gray-400">{title}</span>
+            <span className="cursor-pointer">{title}</span>
           </Link>
         </h1>
 
@@ -21,7 +21,7 @@ export default function Header({ title }) {
         </div>
 
         {/* Navigation */}
-        <nav
+        {/* <nav
           className={`absolute top-14 left-0 w-full bg-gray-900 md:relative md:bg-transparent md:flex md:items-center md:space-x-6 md:top-auto md:left-auto p-4 md:p-0 transition-all duration-300 ${
             menuOpen ? "block" : "hidden md:flex"
           }`}
@@ -49,7 +49,7 @@ export default function Header({ title }) {
               </Link>
             </li>
           </ul>
-        </nav>
+        </nav> */}
       </div>
     </header>
   );

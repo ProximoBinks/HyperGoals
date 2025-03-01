@@ -14,11 +14,11 @@ export default function Home() {
 
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
-      <h2 className="text-lg font-semibold text-center mt-6">📌 My Goals</h2>
+      <h2 className="text-xl font-[700] text-center mt-6">📌 My Goals</h2>
       <div className="mt-6 space-y-4">
         {goals.map((goal, index) => (
           <div key={index} className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-base font-medium">{goal.title} ({goal.progress}%)</h3>
+            <h3 className="text-base font-[600]">{goal.title} ({goal.progress}%)</h3>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${goal.progress}%` }}></div>
             </div>

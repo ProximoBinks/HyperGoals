@@ -5,7 +5,7 @@ export default function Layout({ children }) {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Fixed Header */}
-      <Header title="HyperGoals" />
+      <Header title="HYPERGOALS" />
 
       {/* Main Content - Ensures Proper Spacing from Header */}
       <main className="flex-grow pt-14 px-4 pb-10">

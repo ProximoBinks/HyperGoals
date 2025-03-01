@@ -7,7 +7,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Roboto", "sans-serif"], // Set Roboto as the default font
+        proxima: ["Proxima Nova", "sans-serif"],
+        "proxima-condensed": ["Proxima Nova Condensed", "sans-serif"],
+        "proxima-extracondensed": ["Proxima Nova Extra Condensed", "sans-serif"],
       },
     },
   },
