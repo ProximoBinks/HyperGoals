@@ -164,11 +164,10 @@ export default function Home() {
             {`🔥 Streak Calendar ${monthName}`}
           </h3>
           <button
-            className={`px-3 py-1 rounded ${
-              isSameMonth(currentDate, today)
+            className={`px-3 py-1 rounded ${isSameMonth(currentDate, today)
                 ? "opacity-50 cursor-not-allowed"
                 : "bg-gray-700 text-white hover:bg-gray-800"
-            }`}
+              }`}
             onClick={() => {
               if (!isSameMonth(currentDate, today)) {
                 setCurrentDate(addMonths(currentDate, 1));
@@ -189,9 +188,8 @@ export default function Home() {
               <div
                 key={index}
                 // 1) Add text color based on dark mode so the day number toggles properly:
-                className={`w-10 h-10 flex items-center justify-center font-bold rounded-md cursor-pointer ${colorClass} ${
-                  isDarkMode ? "text-gray-100" : "text-white"
-                }`}
+                className={`w-10 h-10 flex items-center justify-center font-bold rounded-md cursor-pointer ${colorClass} ${isDarkMode ? "text-gray-100" : "text-white"
+                  }`}
                 onClick={() => handleDayClick(dateObj)} // open the modal
               >
                 {dateObj.getDate()}
@@ -244,20 +242,22 @@ export default function Home() {
             </h3>
 
             {selectedDay.activities.length === 0 ? (
-              <p className="text-center text-gray-400">
-                No activity on this day.
-              </p>
+              <p className="text-center text-gray-400">No activity on this day.</p>
             ) : (
               <div className="space-y-1">
                 <p className="font-semibold">Activities:</p>
                 {selectedDay.activities.map((act, idx) => (
-                  <p key={idx}>• {act}</p>
+                  <p key={idx} className="flex justify-between">
+                    <span>• {act.title}</span>
+                    <span className="text-sm text-gray-400 italic">[{act.type}]</span>
+                  </p>
                 ))}
               </div>
             )}
           </div>
         </div>
       )}
+
 
       {/* Individual Goals */}
       <div className="mt-6 space-y-4">
@@ -310,8 +310,8 @@ export default function Home() {
                 const taskTextClass = task.completed
                   ? "line-through text-gray-400"
                   : isDarkMode
-                  ? "text-gray-100"
-                  : "text-gray-800";
+                    ? "text-gray-100"
+                    : "text-gray-800";
 
                 return (
                   <li key={idx} className="flex items-center space-x-2">
@@ -320,8 +320,8 @@ export default function Home() {
                         task.completed
                           ? "text-green-500"
                           : isDarkMode
-                          ? "text-gray-400"
-                          : "text-gray-500"
+                            ? "text-gray-400"
+                            : "text-gray-500"
                       }
                     >
                       {task.completed ? "✔" : "○"}
